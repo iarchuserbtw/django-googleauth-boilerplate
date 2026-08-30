@@ -1,0 +1,16 @@
+[project]
+name = "pavlin-drf-guide"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "django>=6.1",
+    "django-debug-toolbar>=7.1.1",
+    "django-filter>=26.1",
+    "django-stubs>=6.1.0",
+    "djangorestframework>=3.18.0",
+    "drf-nested-routers>=0.95.3",
+    "drf-spectacular>=0.30.0",
+    "pillow>=12.3.0",
+]
