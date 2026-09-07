@@ -1,7 +1,7 @@
 [project]
-name = "pavlin-drf-guide"
+name = "django-allauth-boilerplate"
 version = "0.1.0"
-description = "Add your description here"
+description = ""
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
@@ -15,4 +15,5 @@ dependencies = [
     "drf-nested-routers>=0.95.3",
     "drf-spectacular>=0.30.0",
     "pillow>=12.3.0",
+    "psycopg2-binary>=2.9.12",
 ]

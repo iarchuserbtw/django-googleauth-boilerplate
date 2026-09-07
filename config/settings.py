@@ -1,12 +1,14 @@
-import os
 from pathlib import Path
 import environ
+import os
 
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
 
-SECRET_KEY = 'django-insecure-3*5)4#&p@8%g8hh3qdr%-yr6ddi5w#*3rzy^%sqaz0(1msge+('
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
 SECRET_KEY = env('SECRET_KEY')
 
 DEBUG = env.bool('DEBUG', default=False)
@@ -23,6 +25,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+THIRD_PATY_APPS = [
+    'rest_framework',
+    'debug_toolbar',
+    'drf_spectacular',
+    'django_filters',
+]
+
+PROJECT_APPS = [
+    
+]
+
+INSTALLED_APPS = INSTALLED_APPS + THIRD_PATY_APPS + PROJECT_APPS
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -32,6 +47,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+THIRD_PATY_MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+]
+
+MIDDLEWARE = MIDDLEWARE + THIRD_PATY_MIDDLEWARE
 
 ROOT_URLCONF = 'config.urls'
 
@@ -57,12 +78,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': env.db_url(
+        'SQLITE_URL',
+        default='sqlite:////tmp/my-tmp-sqlite.db'
+    )
 }
 
+# DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
@@ -111,32 +133,36 @@ MAILERS = {
     },
 }
 
-
-INSTALLED_APPS += [
-    'debug_toolbar',
-    'rest_framework',
-    'drf_spectacular',
-    'django_filters',
-]
-
-MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-] + MIDDLEWARE
-
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-    
+
+    # В каком ввиде данные отдаются
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
+    # В каком ввиде данные принимаются
+    'DEFAULT_PARSES_CLASSES': [
+        'rest_framework.parsers.JSONParser'
+    ],
+    # Доступ к эндпоинтам
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
+    # Защита от атак
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/day',
+        'user': '1000/day'
+    },
+    # Способы аутентификации пользователей
     'DEFAULT_AUTHENTICATION_CLASSES': [
     # 'rest_framework.authentication.TokenAuthentication', # аутентификация по токенам
     #'rest_framework.authentication.SessionAuthentication', # аутентификация по сессиям, стоят по умолчанию
@@ -146,8 +172,38 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Auction API',
+    'TITLE': 'Name API',
     'DESCRIPTION': 'Your project description',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+}
+
+# Тут в будущем глянуть, какие настройки нужны будут для мобильного приложения
+# Кажется тут уже большая часть подходит
+if not DEBUG:
+    SECURE_SSL_REDIRECT = False
+
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = "DENY"
+
+# Логирование, надо будет настроить в будущем для логов
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
 }
