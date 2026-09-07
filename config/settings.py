@@ -27,13 +27,14 @@ INSTALLED_APPS = [
 
 THIRD_PATY_APPS = [
     'rest_framework',
+    'rest_framework_simplejwt',
     'debug_toolbar',
     'drf_spectacular',
     'django_filters',
 ]
 
 PROJECT_APPS = [
-    
+    'apps.users.apps.UsersConfig'
 ]
 
 INSTALLED_APPS = INSTALLED_APPS + THIRD_PATY_APPS + PROJECT_APPS
@@ -164,10 +165,10 @@ REST_FRAMEWORK = {
     },
     # Способы аутентификации пользователей
     'DEFAULT_AUTHENTICATION_CLASSES': [
-    # 'rest_framework.authentication.TokenAuthentication', # аутентификация по токенам
-    #'rest_framework.authentication.SessionAuthentication', # аутентификация по сессиям, стоят по умолчанию
-    #'rest_framework.authentication.BasicAuthentication',
-    #'rest_framework_simplejwt.authentication.JWTAuthentication',
+    'rest_framework.authentication.TokenAuthentication', # аутентификация по токенам
+    'rest_framework.authentication.SessionAuthentication', # аутентификация по сессиям, стоят по умолчанию
+    'rest_framework.authentication.BasicAuthentication',
+    'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
 
