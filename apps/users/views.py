@@ -9,19 +9,6 @@ from rest_framework import generics
 from .models import User
 from .serializers import UserSerializer
 
-class GoogleTestView(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request):
-        return Response({'ok': True})
-        
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({'ok': True})
-
-
     
 @method_decorator(csrf_exempt, name='dispatch')
 class GoogleAuthView(APIView):
@@ -55,15 +42,6 @@ class GoogleAuthView(APIView):
             'tokens': tokens,
         })
 
-
-class MeView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        user = request.user
-        return Response({
-            'has_name': bool(user.name),
-        })
 
 class GoogleAuthGenericsView(generics.ListCreateAPIView):
     queryset = User.objects.all()
