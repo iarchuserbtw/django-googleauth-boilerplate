@@ -15,6 +15,7 @@ DEBUG = env.bool('DEBUG', default=False)
 
 ALLOWED_HOSTS = env('ALLOWED_HOSTS', default='').split(',')
 
+AUTH_USER_MODEL = 'users.User'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -80,7 +81,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': env.db_url(
-        'SQLITE_URL',
+        'DATABASE_URL',
         default='sqlite:////tmp/my-tmp-sqlite.db'
     )
 }
