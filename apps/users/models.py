@@ -7,9 +7,6 @@ class UserManager(BaseUserManager):
     ''' Менеджер при создании пользователей'''
     
     def create_user(self, username=None, email=None, password=None, **extra_fields):
-        if not username:
-            raise ValueError("Username is required")
-
         user = self.model(
             username=username,
             email=email,

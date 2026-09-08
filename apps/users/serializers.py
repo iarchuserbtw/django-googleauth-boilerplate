@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import User
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
@@ -12,9 +12,14 @@ class UserSerializer(serializers.ModelSerializer):
             'last_activity', 
             'is_active', 'is_staff'
         )
-        read_only_fields = ('created_at', 'updated_at', 'last_activity', 'google_id', 'email')
+        read_only_fields = ('created_at', 'updated_at')
 
     def create(self, validated_data):
-        google_id = validated_data.get('google_id')
-        print(google_id)
+        print(validated_data)
         return User.objects.create(**validated_data)
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        models = User
+        fields = 'username', 'display_name', 'phone'
+        

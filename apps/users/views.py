@@ -7,43 +7,15 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import generics
 
 from .models import User
-from .serializers import UserSerializer
-
-    
-@method_decorator(csrf_exempt, name='dispatch')
-class GoogleAuthView(APIView):
-    permission_classes = [AllowAny]
-
-    def post(self, request):
-        token = request.data.get('google_token')
-        if not token:
-            return Response({'error': 'Токен обязателен'}, status=400)
-
-        try:
-            idinfo = id_token.verify_oauth2_token(
-                token,
-                google_requests.Request(),
-                'google id'  # вставишь позже
-            )
-        except ValueError:
-            return Response({'error': 'Невалидный токен'}, status=400)
-
-        google_id = idinfo['sub']
-        email = idinfo.get('email', '')
-
-        user, created = User.objects.get_or_create(google_id=google_id)
-        if created:
-            user.email = email
-            user.save()
-
-        tokens = get_tokens(user, google_id) # что это
-
-        return Response({
-            'tokens': tokens,
-        })
+from .serializers import UserCreateSerializer, UserUpdateSerializer
 
 
-class GoogleAuthGenericsView(generics.ListCreateAPIView):
+class GoogleAuthGenericsView(generics.CreateAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return UserCreateSerializer
+        return UserUpdateSerializer
+
     permission_classes = (AllowAny, )
