@@ -47,7 +47,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     google_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    last_seen = models.DateTimeField(blank=True, null=True)
+    last_activity = models.DateTimeField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 

@@ -4,10 +4,25 @@ from django.utils.decorators import method_decorator
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework import generics
 
 from .models import User
+from .serializers import UserSerializer
+
+class GoogleTestView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        return Response({'ok': True})
+        
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'ok': True})
 
 
+    
 @method_decorator(csrf_exempt, name='dispatch')
 class GoogleAuthView(APIView):
     permission_classes = [AllowAny]
@@ -50,3 +65,7 @@ class MeView(APIView):
             'has_name': bool(user.name),
         })
 
+class GoogleAuthGenericsView(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (AllowAny, )
