@@ -175,7 +175,7 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'GoogleAuth API',
-    'DESCRIPTION': 'Your project description',
+    'DESCRIPTION': 'My Django boilerplate for quick start >:',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }

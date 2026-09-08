@@ -12,7 +12,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             'last_activity', 
             'is_active', 'is_staff'
         )
-        read_only_fields = ('created_at', 'updated_at')
+        read_only_fields = ('created_at', 'updated_at', 'last_activity', 'is_active', 'is_staff')
 
     def create(self, validated_data):
         print(validated_data)
@@ -20,6 +20,6 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
-        models = User
+        model = User
         fields = 'username', 'display_name', 'phone'
         
