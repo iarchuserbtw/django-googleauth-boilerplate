@@ -1,15 +1,9 @@
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework import generics, viewsets, mixins
+from rest_framework import viewsets, mixins
+from rest_framework.response import Response
 
-from .models import User
 from .serializers import UserCreateSerializer, UserUpdateSerializer
-
-
-class GoogleAuthCreateView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserCreateSerializer
-    permission_classes = (AllowAny, )
 
 
 class UserViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
@@ -33,3 +27,5 @@ class UserViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+        
