@@ -1,5 +1,5 @@
 [project]
-name = "django-googleauth-boilerplate"
+name = "django-firebaseauth-boilerplate"
 version = "0.1.0"
 description = ""
 readme = "README.md"
@@ -15,7 +15,7 @@ dependencies = [
     "djangorestframework-simplejwt>=5.5.1",
     "drf-nested-routers>=0.95.3",
     "drf-spectacular>=0.30.0",
-    "google-auth>=2.57.1",
+    "firebase-admin>=7.5.0",
     "pillow>=12.3.0",
     "psycopg2-binary>=2.9.12",
 ]
