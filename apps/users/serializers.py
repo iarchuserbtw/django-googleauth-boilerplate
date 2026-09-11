@@ -2,12 +2,13 @@ from rest_framework import serializers
 
 from .models import User
 
+import re
 
 class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            'username', 'display_name', 'phone', 'email', 'google_id',
+            'username', 'display_name', 'email', 'firebase_uid',
             'created_at', 'updated_at',
             'last_activity', 
             'is_active', 'is_staff'

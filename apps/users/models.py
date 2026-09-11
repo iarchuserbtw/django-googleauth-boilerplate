@@ -39,7 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, null=True, blank=True)
     
     display_name = models.CharField(max_length=25, blank=True, null=True)
-    phone = models.CharField(max_length=15, unique=True)
+    phone = models.CharField(max_length=15, unique=True, null=True, blank=True, default=None)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
