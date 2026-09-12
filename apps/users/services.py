@@ -1,22 +1,19 @@
-from django.contrib.auth import get_user_model
-
-import firebase_admin
-from firebase_admin import credentials
-
+# users/services.py
 import re
-
+from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
 
 
 def _generate_username(email: str) -> str:
-    """ivan.petrov@gmail.com → ivan_petrov; при коллизии → ivan_petrov_2"""
     base = re.sub(r'[^a-z0-9_]', '_', email.split('@')[0].lower())[:27]
     username, counter = base, 1
     while User.objects.filter(username=username).exists():
         counter += 1
         username = f'{base}_{counter}'
     return username
+
 
 def get_or_create_firebase_user(*, firebase_uid: str, email: str,
                                 display_name: str) -> tuple[User, bool]:
@@ -29,8 +26,8 @@ def get_or_create_firebase_user(*, firebase_uid: str, email: str,
         },
     )
     return user, created
-    
-cred = credentials.Certificate('firebase-credentials.json')
-firebase_admin.initialize_app(cred)
 
-def get_token(user_id): ...
+
+def issue_tokens(user: User) -> dict:
+    refresh = RefreshToken.for_user(user)
+    return {'refresh': str(refresh), 'access': str(refresh.access_token)}
