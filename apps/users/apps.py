@@ -1,7 +1,7 @@
 import firebase_admin
-from firebase_admin import credentials
 from django.apps import AppConfig
 from django.conf import settings
+from firebase_admin import credentials
 
 
 class UsersConfig(AppConfig):

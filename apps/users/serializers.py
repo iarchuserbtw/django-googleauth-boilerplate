@@ -1,8 +1,7 @@
-from rest_framework import serializers
+import re
 
 from firebase_admin import auth as fb_auth
-
-import re
+from rest_framework import serializers
 
 from .models import User
 
@@ -12,7 +11,6 @@ class FirebaseAuthSerializer(serializers.Serializer):
     google, email+пароль) и валидирует его."""
 
     id_token = serializers.CharField(write_only=True)
-    # read only поля email firbaseuid убраны, потому что они не должны передаваться пользователяи
 
     def validate(self, attrs):
         try:
@@ -28,30 +26,37 @@ class FirebaseAuthSerializer(serializers.Serializer):
         attrs['email'] = decoded.get('email', '')
         return attrs
 
-        
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'display_name', 'email', 'created_at', 'updated_at', )
+        read_only_fields = ('email', 'created_at', 'updated_at', )
+
+    def validate_username(self, value):
+        if not re.fullmatch(r'[a-z0-9_]{3,15}', value):
+            raise serializers.ValidationError(
+                '3-15 символов: латиница, цифры, подчёркивание'
+            )
+        return value.lower()
+
+    def validate_display_name(self, value):
+        if not re.fullmatch(r'[a-z0-9_]{3,15}', value):
+            raise serializers.ValidationError(
+                '3-15 символов: латиница, цифры, подчёркивание'
+            )
+        return value.lower()
+
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'display_name', 'phone')
 
     def validate_username(self, value):
-        # ModelForm-уникальность DRF проверит сам, а формат — здесь:
         if not re.fullmatch(r'[a-z0-9_]{3,30}', value):
             raise serializers.ValidationError(
                 '3-30 символов: латиница, цифры, подчёркивание'
             )
         return value.lower()
 
-
-class UserReadSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'display_name', 'phone', 'created_at', 'updated_at', 'last_activity', )
-
-
-
-
-class UserCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('display_name', 'email', 'firebase_uid')
+        
