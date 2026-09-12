@@ -209,3 +209,6 @@ LOGGING = {
         "level": "INFO",
     },
 }
+
+# FIREBASE CONFIG
+FIREBASE_KEY_PATH = os.path.join(BASE_DIR, 'firebase-credentials.json')
