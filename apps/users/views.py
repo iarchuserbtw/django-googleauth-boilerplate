@@ -42,13 +42,21 @@ class FirebaseAuthView(APIView):
         return Response({**tokens, 'is_new_user': created})
 
 
-class MeView(generics.RetrieveUpdateAPIView):
+class MeView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticated, )
 
     def get_object(self):
         return self.request.user
     
+
+class MeDestroy(APIView):
+    def delete(self):
+        # Проверка токена
+        # Система ожидании удаление акаунта
+        ...
+
+        
 
 # отдельным apiview реализовать удаление аккаунта, возможно через redis   
 # аутентификацию пользователя сделать отдельно, для изменения данных сделать отедельные эндпоинты
