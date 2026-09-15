@@ -7,6 +7,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .models import AccountDeletionRequest
 from .serializers import FirebaseAuthSerializer, UserSerializer
 from .services import get_or_create_firebase_user, issue_tokens
 
@@ -19,11 +20,8 @@ class FirebaseAuthView(APIView):
 
     # Документация api
     @extend_schema(
-        tags=['Auth'],
-        summary='Аутентификация через Firebase',
+        tags=['auth'],
         request=FirebaseAuthSerializer,
-        # responses={200: FirebaseLoginResponseSerializer, 201: FirebaseLoginResponseSerializer},
-        auth=[],
     )
     def post(self, request):
         # Проверка данных, токена
@@ -42,7 +40,8 @@ class FirebaseAuthView(APIView):
         return Response({**tokens, 'is_new_user': created})
 
 
-class MeView(generics.RetrieveUpdateDestroyAPIView):
+class MeView(generics.RetrieveUpdateAPIView):
+    ''' Получение личных данных пользователем '''
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticated, )
 
@@ -50,13 +49,31 @@ class MeView(generics.RetrieveUpdateDestroyAPIView):
         return self.request.user
     
 
-class MeDestroy(APIView):
-    def delete(self):
-        # Проверка токена
-        # Система ожидании удаление акаунта
-        ...
+class RequestDeletionView(APIView):
+    ''' Добавление пользователя в ожидание для удаления '''
+    permission_classes = (IsAuthenticated, )
 
+    def post(self, request):
+        # Проверка данных, токена
+        serializer = FirebaseAuthSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Отправление запроса на удаление
+        req = AccountDeletionRequest.schedule(request.user, reason=request.data.get('reason', ''))
+        return Response({'detail': f'Аккаунт будет удалён {req.delete_at:%d.%m.%Y}'})
+
+
+class CancleDeleteView(APIView):
+    ''' Эндпоинт для отмены удаления аккаунта пользователем '''
+    permission_classes = (AllowAny, )
+
+    def post(self, request):
+        # Проверка данных, токена
+        serializer = FirebaseAuthSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Отправление запроса на отмену
+        req = AccountDeletionRequest.cancel(...)
+        return Response({'detail': f'Аккаунт будет удалён {req.delete_at:%d.%m.%Y}'})
         
-
-# отдельным apiview реализовать удаление аккаунта, возможно через redis   
-# аутентификацию пользователя сделать отдельно, для изменения данных сделать отедельные эндпоинты
+        

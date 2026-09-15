@@ -6,6 +6,7 @@ from rest_framework import serializers
 from .models import User
 
 
+# Убрать это отсюда
 class FirebaseAuthSerializer(serializers.Serializer):
     """Принимает id_token от Firebase (любой провайдер входа:
     google, email+пароль) и валидирует его."""
@@ -30,8 +31,8 @@ class FirebaseAuthSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'display_name', 'email', 'created_at', 'updated_at', )
-        read_only_fields = ('email', 'created_at', 'updated_at', )
+        fields = ('username', 'display_name', 'email', 'updated_at', )
+        read_only_fields = ('email', 'updated_at', )
 
     def validate_username(self, value):
         if not re.fullmatch(r'[a-z0-9_]{3,15}', value):
@@ -58,5 +59,3 @@ class UserUpdateSerializer(serializers.ModelSerializer):
                 '3-30 символов: латиница, цифры, подчёркивание'
             )
         return value.lower()
-
-        

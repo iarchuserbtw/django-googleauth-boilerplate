@@ -21,9 +21,6 @@ def _generate_username(email: str) -> str:
 
 
 def get_or_create_firebase_user(*, firebase_uid: str, email: str) -> tuple[User, bool]:
-
-    # убрать передачу display name и сделать генерацию имени через generate_username 
-    
     user, created = User.objects.get_or_create(
         firebase_uid=firebase_uid,
         defaults={
@@ -34,3 +31,17 @@ def get_or_create_firebase_user(*, firebase_uid: str, email: str) -> tuple[User,
     )
     return user, created
 
+
+def verify_id_token(firebase_uid: str):
+    try:
+        decoded = fb_auth.verify_id_token(attrs['id_token'], check_revoked=True)
+    except fb_auth.InvalidIdTokenError:
+        raise ...
+
+    if not decoded.get("email"):
+            raise serializers.ValidationError({"id_token": "В токене нет email"})
+
+    attrs['firebase_uid'] = decoded['uid']
+    attrs['email'] = decoded.get('email', '')
+    return attrs
+    
