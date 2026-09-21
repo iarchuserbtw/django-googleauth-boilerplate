@@ -1,31 +1,8 @@
 import re
 
-from firebase_admin import auth as fb_auth
 from rest_framework import serializers
 
 from .models import User
-
-
-# Убрать это отсюда
-class FirebaseAuthSerializer(serializers.Serializer):
-    """Принимает id_token от Firebase (любой провайдер входа:
-    google, email+пароль) и валидирует его."""
-
-    id_token = serializers.CharField(write_only=True)
-
-    def validate(self, attrs):
-        try:
-            decoded = fb_auth.verify_id_token(attrs['id_token'], check_revoked=True)
-        except fb_auth.InvalidIdTokenError:
-            raise serializers.ValidationError(
-                {'id_token': 'Токен невалиден или истёк'})
-
-        if not decoded.get("email"):
-                raise serializers.ValidationError({"id_token": "В токене нет email"})
-
-        attrs['firebase_uid'] = decoded['uid']
-        attrs['email'] = decoded.get('email', '')
-        return attrs
 
 
 class UserSerializer(serializers.ModelSerializer):

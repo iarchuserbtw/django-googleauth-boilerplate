@@ -1,42 +1,44 @@
 from django.contrib.auth import get_user_model
-from django.views import generic
-from drf_spectacular.utils import extend_schema
-from rest_framework import generics, mixins, viewsets
-from rest_framework.decorators import action, permission_classes
+from drf_spectacular.utils import extend_schema, inline_serializer
+from firebase_admin.auth import verify_id_token
+from rest_framework import generics, serializers
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import AccountDeletionRequest
-from .serializers import FirebaseAuthSerializer, UserSerializer
+from .serializers import UserSerializer
 from .services import get_or_create_firebase_user, issue_tokens
 
 User = get_user_model()
 
 
 class FirebaseAuthView(APIView):
-    """POST /api/auth/firebase/ — единственная дверь регистрации/входа."""
-    permission_classes = [AllowAny]
+    ''' Проверка id_token, создание пользователя в бд, выдача доступа'''
+    permission_classes = (AllowAny, )
 
-    # Документация api
     @extend_schema(
-        tags=['auth'],
-        request=FirebaseAuthSerializer,
+        request=inline_serializer(
+            name='FirebaseAuth',
+            fields={
+                'id_token': serializers.CharField(),
+            }
+        ),
+        responses={200: inline_serializer(
+            name='FirebaseAuth',
+            fields={'status': serializers.CharField()}
+        )}
     )
     def post(self, request):
-        # Проверка данных, токена
-        serializer = FirebaseAuthSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        # Данные пользователя
-        data = serializer.validated_data
+        # Проверка и получение данных от пользователя
+        data = verify_id_token(id_token=request.data['id_token'])
 
         # Создание пользователя
-        user, created = get_or_create_firebase_user(firebase_uid=data['firebase_uid'], email=data['email'])
-        
+        user, created = get_or_create_firebase_user(firebase_uid=data.get('uid'), email=data.get('email'))
+
+        # Выдача доступа пользователю
         tokens = issue_tokens(user)
 
-        # HTTP
         return Response({**tokens, 'is_new_user': created})
 
 

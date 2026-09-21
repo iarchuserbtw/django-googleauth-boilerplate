@@ -41,17 +41,6 @@ def verify_id_token(id_token: str):
 
     if not decoded.get('email') or decoded.get('uid'):
             raise ...
-
-    print(decoded)
+            
     return decoded
-
-    
-if __name__ == '__main__':
-    from firebase_admin import credentials
-
-    cred = credentials.Certificate('firebase-credentials.json')
-    firebase_admin.initialize_app(cred)
-
-    id_token = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjY2MmQ3YTBkNGVlZmQzNDMyNjFjYWRkZmZhZWM2MjNkYzZjYTlmZjAiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vdGVzdC1wcm9qZWN0LWVjOTczIiwiYXVkIjoidGVzdC1wcm9qZWN0LWVjOTczIiwiYXV0aF90aW1lIjoxNzg5NDY2ODMzLCJ1c2VyX2lkIjoiNVNVYjBINGpLdWNqRUR1dGd0TGtZbllyVHE2MyIsInN1YiI6IjVTVWIwSDRqS3VjakVEdXRndExrWW5ZclRxNjMiLCJpYXQiOjE3ODk0NjY4MzMsImV4cCI6MTc4OTQ3MDQzMywiZW1haWwiOiJ0ZXN0MTIyMzU2QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJ0ZXN0MTIyMzU2QGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.BRx_Jz3QismOg8D4L0XD9-yYrl-FvWThvQzpM7MJXVZpmh4yUs9AUQ0QB1i1zf5g494vff7JiBebbPls9sjLzLVbsLSxpA-X2iDIzK0pZDj6Fbb_-mJnQzwLzqLPx-mZLI3Y3UGksAKivcMxnA5_n2c0kVUJvLRTDYbXxKkPCq773CHPBjvT24dwoFvzqvAjaJce4RahI-zVT3k8QEw3P-VQznwYK_cq83hFUYNfDSJrm61tSykIFDZcTHk1Ab15-oHFpTy3N_wxTNP0Pf2eHr8oHNLRHB6KBXj4D_ZgD2xJz9jvhug2TNUf6QrAwdIQczBQxv_UJrM2KzuhY_nbzw'
-    verify_id_token(id_token)
 
