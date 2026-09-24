@@ -3,6 +3,7 @@
 
 ### типа как запустить проект
 - uv sync
+- если линукс source .venv/bin/activate
 - python manage.py makemigrations
 - python manage.py migrate
 - python manage.py runserver
@@ -15,10 +16,12 @@
 Изменение данных пользователя
 
 ### Features
-- uvicorn / gunicorn for starting
-- сделать докер образ
 - написать тесты
-- сделать последнюю активность пользователя
-- Посмотреть можно ли закинуть ссылку на postman collection 
+- сделать докер образ
+- Сделать докер композ файлы
 - Сделать удаления аккаунта, 
+- uvicorn / gunicorn for starting
+- сделать последнюю активность пользователя
+- Посмотреть можно ли закинуть ссылку на postman collection в гитхаб
 - Сделать файл, где будут как включить mfa и как его активировать 
+- Сделать CI CD

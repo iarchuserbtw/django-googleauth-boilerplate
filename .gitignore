@@ -9,5 +9,7 @@ wheels/
 # Virtual environments
 .venv
 .env
+.env.dev
+.env.prod
 *sqlite3
 *json

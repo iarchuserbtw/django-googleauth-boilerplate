@@ -12,14 +12,14 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ('email', 'updated_at', )
 
     def validate_username(self, value):
-        if not re.fullmatch(r'[a-z0-9_]{3,15}', value):
+        if not re.fullmatch(r'[a-z0-9_]{3,30}', value):
             raise serializers.ValidationError(
                 '3-15 символов: латиница, цифры, подчёркивание'
             )
         return value.lower()
 
     def validate_display_name(self, value):
-        if not re.fullmatch(r'[a-z0-9_]{3,15}', value):
+        if not re.fullmatch(r'[a-z0-9_]{3,30}', value):
             raise serializers.ValidationError(
                 '3-15 символов: латиница, цифры, подчёркивание'
             )

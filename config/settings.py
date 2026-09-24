@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': env.db_url(
-        'DATABASE_URLI',
+        'DATABASE_URL',
         default=f'sqlite:///{BASE_DIR / "db.sqlite3"}'
     )
 }
@@ -154,7 +154,7 @@ REST_FRAMEWORK = {
     ],
     # Доступ к эндпоинтам
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
     ],
     # Защита от атак
     'DEFAULT_THROTTLE_CLASSES': [
