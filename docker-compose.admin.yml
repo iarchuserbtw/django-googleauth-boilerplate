@@ -1,0 +1,17 @@
+services:
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:latest
+    container_name: cloudbeaver
+  
+    ports:
+      - "8978:8978"
+  
+    restart: unless-stopped
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+  
+    ports:
+      - "8080:8080"
+  
+    restart: unless-stopped
