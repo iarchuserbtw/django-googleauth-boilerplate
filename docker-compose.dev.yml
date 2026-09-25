@@ -1,4 +1,24 @@
 services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+      
+    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+    volumes:
+      - .:/app
+      - /app/.venv
+    
+    env_file:
+      - .env.dev
+
+    ports:
+      - "8000:8000"
+    
+    restart: no
+    
   db:
     ports:
       - "5432:5432"
@@ -22,21 +42,3 @@ services:
       
     depends_on:
       - db
-  
-  api:
-    build:
-      target: dev
-      
-    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
-
-    volumes:
-      - .:/app
-      - /app/.venv
-    
-    env_file:
-      - .env.dev
-
-    ports:
-      - "8000:8000"
-    
-    restart: no

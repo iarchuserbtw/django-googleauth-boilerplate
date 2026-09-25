@@ -1,21 +1,4 @@
 services:
-  db:
-    image: postgres:16-alpine
-    restart: unless-stopped
-
-    env_file:
-      - .env.prod
-
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"
-        ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
   api:
     # Сделать images а не build
     build:
@@ -37,6 +20,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+        
+  db:
+    restart: unless-stopped
+
+    env_file:
+      - .env.prod
+
 
 
 volumes:
