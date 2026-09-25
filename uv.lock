@@ -307,7 +307,7 @@ wheels = [
 ]
 
 [[package]]
-name = "django-googleauth-boilerplate"
+name = "django-firebaseauth-boilerplate"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
