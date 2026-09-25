@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema, inline_serializer
-from firebase_admin.auth import verify_id_token
 from rest_framework import generics, serializers
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -8,7 +7,7 @@ from rest_framework.views import APIView
 
 from .models import AccountDeletionRequest
 from .serializers import UserSerializer
-from .services import get_or_create_firebase_user, issue_tokens
+from .services import get_or_create_firebase_user, issue_tokens, verify_id_token
 
 User = get_user_model()
 

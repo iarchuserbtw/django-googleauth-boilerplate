@@ -14,25 +14,13 @@ class UserSerializer(serializers.ModelSerializer):
     def validate_username(self, value):
         if not re.fullmatch(r'[a-z0-9_]{3,30}', value):
             raise serializers.ValidationError(
-                '3-15 символов: латиница, цифры, подчёркивание'
+                '3-30 символов: латиница, цифры, подчёркивание'
             )
         return value.lower()
 
     def validate_display_name(self, value):
-        if not re.fullmatch(r'[a-z0-9_]{3,30}', value):
+        if not re.fullmatch(r'[a-z0-9_]{3,25}', value):
             raise serializers.ValidationError(
-                '3-15 символов: латиница, цифры, подчёркивание'
-            )
-        return value.lower()
-
-class UserUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('username', 'display_name', 'phone')
-
-    def validate_username(self, value):
-        if not re.fullmatch(r'[a-z0-9_]{3,30}', value):
-            raise serializers.ValidationError(
-                '3-30 символов: латиница, цифры, подчёркивание'
+                '3-25 символов: латиница, цифры, подчёркивание'
             )
         return value.lower()

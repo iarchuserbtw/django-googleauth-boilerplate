@@ -22,12 +22,13 @@ def _generate_username(email: str) -> str:
 
 
 def get_or_create_firebase_user(*, firebase_uid: str, email: str) -> tuple[User, bool]:
+    username = _generate_username(email)
     user, created = User.objects.get_or_create(
         firebase_uid=firebase_uid,
         defaults={
-            'username': _generate_username(email),
+            'username': username,
             'email': email,
-            'display_name': _generate_username(email),
+            'display_name': username,
         },
     )
     return user, created

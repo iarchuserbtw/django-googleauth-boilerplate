@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-THIRD_PATY_APPS = [
+THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'debug_toolbar',
@@ -39,7 +39,7 @@ PROJECT_APPS = [
     'apps.users.apps.UsersConfig'
 ]
 
-INSTALLED_APPS = INSTALLED_APPS + THIRD_PATY_APPS + PROJECT_APPS
+INSTALLED_APPS = INSTALLED_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -51,11 +51,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-THIRD_PATY_MIDDLEWARE = [
+THIRD_PARTY_MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
-MIDDLEWARE = MIDDLEWARE + THIRD_PATY_MIDDLEWARE
+MIDDLEWARE = MIDDLEWARE + THIRD_PARTY_MIDDLEWARE
 
 ROOT_URLCONF = 'config.urls'
 
@@ -167,9 +167,7 @@ REST_FRAMEWORK = {
     },
     # Способы аутентификации пользователей
     'DEFAULT_AUTHENTICATION_CLASSES': [
-    'rest_framework.authentication.TokenAuthentication', # аутентификация по токенам
-    'rest_framework.authentication.SessionAuthentication', # аутентификация по сессиям, стоят по умолчанию
-    'rest_framework.authentication.BasicAuthentication',
+    'rest_framework.authentication.SessionAuthentication', # аутентификация по сессиям, для админки
     'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
