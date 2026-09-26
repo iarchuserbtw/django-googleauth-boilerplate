@@ -40,7 +40,7 @@ def verify_id_token(id_token: str):
     except auth.InvalidIdTokenError:
         raise ...
 
-    if not decoded.get('email') or decoded.get('uid'):
+    if not decoded.get('email') or not decoded.get('uid'):
             raise ...
             
     return decoded

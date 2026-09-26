@@ -56,8 +56,7 @@ class RequestDeletionView(APIView):
 
     def post(self, request):
         # Проверка данных, токена
-        serializer = FirebaseAuthSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        verify_id_token(id_token=request.data['id_token'])
 
         # Отправление запроса на удаление
         req = AccountDeletionRequest.schedule(request.user, reason=request.data.get('reason', ''))
@@ -70,8 +69,7 @@ class CancleDeleteView(APIView):
 
     def post(self, request):
         # Проверка данных, токена
-        serializer = FirebaseAuthSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        verify_id_token(id_token=request.data['id_token'])
 
         # Отправление запроса на отмену
         req = AccountDeletionRequest.cancel(...)

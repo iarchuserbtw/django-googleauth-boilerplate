@@ -149,7 +149,7 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
     # В каком ввиде данные принимаются
-    'DEFAULT_PARSES_CLASSES': [
+    'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser'
     ],
     # Доступ к эндпоинтам
