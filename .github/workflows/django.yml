@@ -1,0 +1,51 @@
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Куда деплоить'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password123
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      SECRET_KEY: "fake-secret-key"
+      POSTGRES_DB: db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read python version
+        run: echo "PYTHON_VERSION=$(cat .python-version)" >> $GITHUB_ENV
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install Dependencies
+        working-directory: backend
+        run: uv sync --frozen
+      - name: Run Tests
+        working-directory: backend
+        run: uv run python manage.py test
+  
