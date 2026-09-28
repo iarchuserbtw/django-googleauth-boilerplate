@@ -1,0 +1,30 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    # команды вынесены сюда, чтобы была гибкость при запуске дев
+    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+    volumes:
+      - .:/app
+      - /app/.venv
+    
+    env_file:
+      - .env.dev
+
+    ports:
+      - "8000:8000"
+    
+    restart: no
+    
+  db:
+    # пробрасываем порт при дев, чтобы если что напрямую рабоать с бд
+    ports:
+      - "5432:5432"
+
+    env_file:
+      - .env.dev
+
+    restart: no

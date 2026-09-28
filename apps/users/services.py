@@ -1,6 +1,7 @@
 import re
 
 from django.contrib.auth import get_user_model
+from firebase_admin import auth
 from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
@@ -21,16 +22,26 @@ def _generate_username(email: str) -> str:
 
 
 def get_or_create_firebase_user(*, firebase_uid: str, email: str) -> tuple[User, bool]:
-
-    # убрать передачу display name и сделать генерацию имени через generate_username 
-    
+    username = _generate_username(email)
     user, created = User.objects.get_or_create(
         firebase_uid=firebase_uid,
         defaults={
-            'username': _generate_username(email),
+            'username': username,
             'email': email,
-            'display_name': _generate_username(email),
+            'display_name': username,
         },
     )
     return user, created
+
+
+def verify_id_token(id_token: str):
+    try:
+        decoded = auth.verify_id_token(id_token, check_revoked=True)
+    except auth.InvalidIdTokenError:
+        raise ...
+
+    if not decoded.get('email') or not decoded.get('uid'):
+            raise ...
+            
+    return decoded
 

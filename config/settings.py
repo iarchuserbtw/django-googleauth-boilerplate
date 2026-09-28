@@ -1,14 +1,14 @@
-from pathlib import Path
-import environ
 import os
 from datetime import timedelta
+from pathlib import Path
 
+import environ
 
 env = environ.Env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+environ.Env.read_env(os.path.join(BASE_DIR, '.env.dev'))
 
 SECRET_KEY = env('SECRET_KEY')
 
@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-THIRD_PATY_APPS = [
+THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'debug_toolbar',
@@ -39,7 +39,7 @@ PROJECT_APPS = [
     'apps.users.apps.UsersConfig'
 ]
 
-INSTALLED_APPS = INSTALLED_APPS + THIRD_PATY_APPS + PROJECT_APPS
+INSTALLED_APPS = INSTALLED_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -51,11 +51,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-THIRD_PATY_MIDDLEWARE = [
+THIRD_PARTY_MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
-MIDDLEWARE = MIDDLEWARE + THIRD_PATY_MIDDLEWARE
+MIDDLEWARE = MIDDLEWARE + THIRD_PARTY_MIDDLEWARE
 
 ROOT_URLCONF = 'config.urls'
 
@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': env.db_url(
-        'DATABASE_URLI',
+        'DATABASE_URL',
         default=f'sqlite:///{BASE_DIR / "db.sqlite3"}'
     )
 }
@@ -149,12 +149,12 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
     # В каком ввиде данные принимаются
-    'DEFAULT_PARSES_CLASSES': [
+    'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser'
     ],
     # Доступ к эндпоинтам
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
     ],
     # Защита от атак
     'DEFAULT_THROTTLE_CLASSES': [
@@ -167,9 +167,7 @@ REST_FRAMEWORK = {
     },
     # Способы аутентификации пользователей
     'DEFAULT_AUTHENTICATION_CLASSES': [
-    'rest_framework.authentication.TokenAuthentication', # аутентификация по токенам
-    'rest_framework.authentication.SessionAuthentication', # аутентификация по сессиям, стоят по умолчанию
-    'rest_framework.authentication.BasicAuthentication',
+    'rest_framework.authentication.SessionAuthentication', # аутентификация по сессиям, для админки
     'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }

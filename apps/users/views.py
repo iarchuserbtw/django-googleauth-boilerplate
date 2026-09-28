@@ -1,48 +1,51 @@
 from django.contrib.auth import get_user_model
-from django.views import generic
-from drf_spectacular.utils import extend_schema
-from rest_framework import generics, mixins, viewsets
-from rest_framework.decorators import action, permission_classes
+from drf_spectacular.utils import extend_schema, inline_serializer
+from rest_framework import generics, serializers
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import FirebaseAuthSerializer, UserSerializer
-from .services import get_or_create_firebase_user, issue_tokens
+from .models import AccountDeletionRequest
+from .serializers import UserSerializer
+from .services import get_or_create_firebase_user, issue_tokens, verify_id_token
 
 User = get_user_model()
 
 
 class FirebaseAuthView(APIView):
-    """POST /api/auth/firebase/ — единственная дверь регистрации/входа."""
-    permission_classes = [AllowAny]
+    ''' Проверка id_token, создание пользователя в бд, выдача доступа'''
+    permission_classes = (AllowAny, )
 
-    # Документация api
     @extend_schema(
-        tags=['Auth'],
-        summary='Аутентификация через Firebase',
-        request=FirebaseAuthSerializer,
-        # responses={200: FirebaseLoginResponseSerializer, 201: FirebaseLoginResponseSerializer},
-        auth=[],
+        request=inline_serializer(
+            name='FirebaseAuth',
+            fields={
+                'id_token': serializers.CharField(),
+            }
+        ),
+        responses={200: inline_serializer(
+            name='FirebaseAuth',
+            fields={'status': serializers.CharField()}
+        )}
     )
     def post(self, request):
-        # Проверка данных, токена
-        serializer = FirebaseAuthSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        # Данные пользователя
-        data = serializer.validated_data
+        # Проверка и получение данных от пользователя
+        data = verify_id_token(id_token=request.data['id_token'])
 
         # Создание пользователя
-        user, created = get_or_create_firebase_user(firebase_uid=data['firebase_uid'], email=data['email'])
-        
+        user, created = get_or_create_firebase_user(firebase_uid=data.get('uid'), email=data.get('email'))
+
+        if not user.is_active:
+            Response({'detail':'your account will be delete at 324234'})
+        # Выдача доступа пользователю
         tokens = issue_tokens(user)
 
-        # HTTP
         return Response({**tokens, 'is_new_user': created})
 
 
 class MeView(generics.RetrieveUpdateAPIView):
+    ''' Получение личных данных пользователем '''
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticated, )
 
@@ -50,5 +53,57 @@ class MeView(generics.RetrieveUpdateAPIView):
         return self.request.user
     
 
-# отдельным apiview реализовать удаление аккаунта, возможно через redis   
-# аутентификацию пользователя сделать отдельно, для изменения данных сделать отедельные эндпоинты
+class RequestDeletionView(APIView):
+    ''' Добавление пользователя в очередь для удаления '''
+    permission_classes = (IsAuthenticated, )
+
+    @extend_schema(
+        request=inline_serializer(
+            name='DeleteUser',
+            fields={
+                'id_token': serializers.CharField(),
+                'reason': serializers.CharField(),
+            }
+        ),
+        responses={200: inline_serializer(
+            name='DeleteUser',
+            fields={'status': serializers.CharField()}
+        )}
+    )
+    def post(self, request):
+        # Проверка данных, токена
+        decoded = verify_id_token(id_token=request.data['id_token'])
+        # Проверка на то тот ли пользователь хочет удалить аккаунт
+        if decoded["uid"] != request.user.firebase_uid:
+            raise PermissionDenied('Firebase token does not belong to the authenticated user.')
+            
+        # Отправление запроса на удаление
+        req = AccountDeletionRequest.schedule(request.user, reason=request.data.get('reason', ''))
+        return Response({'detail': f'Аккаунт будет удалён {req.delete_at:%d.%m.%Y}'})
+
+
+class CancleDeleteView(APIView):
+    ''' Эндпоинт для отмены удаления аккаунта пользователем '''
+    permission_classes = (AllowAny, )
+
+    @extend_schema(
+        request=inline_serializer(
+            name='CancelDeleteUser',
+            fields={
+                'id_token': serializers.CharField(),
+            }
+        ),
+        responses={200: inline_serializer(
+            name='CancelDeleteUser',
+            fields={'status': serializers.CharField()}
+        )}
+    )
+    def post(self, request):
+        # Проверка данных, токена
+        verify_id_token(id_token=request.data['id_token'])
+        
+        # Отправление запроса на отмену
+        request.user.deletion_request.cancel()
+        return Response({'detail': 'Аккаунт востановлен'})
+        
+        
