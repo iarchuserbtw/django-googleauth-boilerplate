@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0003_remove_user_google_id_user_firebase_uid_and_more'),
+        ("users", "0003_remove_user_google_id_user_firebase_uid_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='phone',
-            field=models.CharField(blank=True, default=None, max_length=15, null=True, unique=True),
+            model_name="user",
+            name="phone",
+            field=models.CharField(
+                blank=True, default=None, max_length=15, null=True, unique=True
+            ),
         ),
     ]

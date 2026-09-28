@@ -24,16 +24,12 @@ class DeleteUsersCommandTests(TestCase):
 
         request = AccountDeletionRequest.schedule(user)
 
-        request.delete_at = (
-            timezone.now() - timedelta(hours=1)
-        )
+        request.delete_at = timezone.now() - timedelta(hours=1)
         request.save(update_fields=["delete_at"])
 
         call_command("deleteusers")
 
-        self.assertFalse(
-            User.objects.filter(pk=user.pk).exists()
-        )
+        self.assertFalse(User.objects.filter(pk=user.pk).exists())
 
     def test_future_account_is_not_deleted(self):
         user = self.create_user("future")
@@ -42,18 +38,14 @@ class DeleteUsersCommandTests(TestCase):
 
         call_command("deleteusers")
 
-        self.assertTrue(
-            User.objects.filter(pk=user.pk).exists()
-        )
+        self.assertTrue(User.objects.filter(pk=user.pk).exists())
 
     def test_cancelled_account_is_not_deleted(self):
         user = self.create_user("cancelled")
 
         request = AccountDeletionRequest.schedule(user)
 
-        request.delete_at = (
-            timezone.now() - timedelta(hours=1)
-        )
+        request.delete_at = timezone.now() - timedelta(hours=1)
         request.is_cancelled = True
 
         request.save(
@@ -65,18 +57,14 @@ class DeleteUsersCommandTests(TestCase):
 
         call_command("deleteusers")
 
-        self.assertTrue(
-            User.objects.filter(pk=user.pk).exists()
-        )
+        self.assertTrue(User.objects.filter(pk=user.pk).exists())
 
     def test_command_outputs_success_message(self):
         user = self.create_user("output")
 
         request = AccountDeletionRequest.schedule(user)
 
-        request.delete_at = (
-            timezone.now() - timedelta(hours=1)
-        )
+        request.delete_at = timezone.now() - timedelta(hours=1)
         request.save(update_fields=["delete_at"])
 
         stdout = StringIO()

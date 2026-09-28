@@ -4,29 +4,28 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0002_rename_last_seen_user_last_activity'),
+        ("users", "0002_rename_last_seen_user_last_activity"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='user',
-            name='google_id',
+            model_name="user",
+            name="google_id",
         ),
         migrations.AddField(
-            model_name='user',
-            name='firebase_uid',
+            model_name="user",
+            name="firebase_uid",
             field=models.CharField(max_length=128, null=True, unique=True),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='phone',
+            model_name="user",
+            name="phone",
             field=models.CharField(max_length=15, unique=True),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='username',
+            model_name="user",
+            name="username",
             field=models.CharField(max_length=30, unique=True),
         ),
     ]

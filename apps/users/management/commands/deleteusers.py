@@ -19,6 +19,4 @@ class Command(BaseCommand):
             # TODO: удалить пользователя из Firebase
             user.delete()
 
-            self.stdout.write(
-                self.style.SUCCESS("Account deleted")
-            )
+            self.stdout.write(self.style.SUCCESS("Account deleted"))

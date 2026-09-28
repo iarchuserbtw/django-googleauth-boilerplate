@@ -18,14 +18,10 @@ class UserProfileTests(APITestCase):
 
         access = RefreshToken.for_user(self.user).access_token
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {access}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {access}")
 
     def test_get_profile(self):
-        response = self.client.get(
-            reverse("me_view")
-        )
+        response = self.client.get(reverse("me_view"))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -69,9 +65,7 @@ class UserProfileTests(APITestCase):
     def test_unauthenticated_user_cannot_get_profile(self):
         self.client.credentials()
 
-        response = self.client.get(
-            reverse("me_view")
-        )
+        response = self.client.get(reverse("me_view"))
 
         self.assertEqual(
             response.status_code,

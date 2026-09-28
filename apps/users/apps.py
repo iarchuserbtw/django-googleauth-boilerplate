@@ -6,7 +6,7 @@ from firebase_admin import credentials
 
 class UsersConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = 'apps.users'
+    name = "apps.users"
 
     def ready(self):
         if not firebase_admin._apps:

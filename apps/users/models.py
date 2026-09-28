@@ -27,11 +27,12 @@ class User(AbstractUser):
 
 
 class AccountDeletionRequest(models.Model):
-    ''' Модель для удаление пользователей '''
+    """Модель для удаление пользователей"""
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='deletion_request',
+        related_name="deletion_request",
     )
     reason = models.TextField(blank=True)
     delete_at = models.DateTimeField(db_index=True)
@@ -39,26 +40,25 @@ class AccountDeletionRequest(models.Model):
     requested_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Запрос на удаление аккаунта'
-        verbose_name_plural = 'Запросы на удаление аккаунтов'
+        verbose_name = "Запрос на удаление аккаунта"
+        verbose_name_plural = "Запросы на удаление аккаунтов"
 
     @classmethod
-    def schedule(cls, user, reason='', days: int = 7):
+    def schedule(cls, user, reason="", days: int = 7):
         req, _ = cls.objects.update_or_create(
             user=user,
             defaults={
-                'delete_at': timezone.now() + timedelta(days=days),
-                'is_cancelled': False,
-                'reason': reason,
+                "delete_at": timezone.now() + timedelta(days=days),
+                "is_cancelled": False,
+                "reason": reason,
             },
         )
         user.is_active = False
-        user.save(update_fields=['is_active'])
+        user.save(update_fields=["is_active"])
         return req
 
     def cancel(self):
         self.is_cancelled = True
-        self.save(update_fields=['is_cancelled'])
+        self.save(update_fields=["is_cancelled"])
         self.user.is_active = True
-        self.user.save(update_fields=['is_active'])
-    
+        self.user.save(update_fields=["is_active"])

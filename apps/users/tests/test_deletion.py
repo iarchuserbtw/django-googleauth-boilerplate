@@ -21,9 +21,7 @@ class AccountDeletionAPITests(APITestCase):
 
         access = RefreshToken.for_user(self.user).access_token
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {access}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {access}")
 
     @patch("apps.users.views.verify_id_token")
     def test_request_account_deletion(self, mock_verify):
@@ -43,9 +41,7 @@ class AccountDeletionAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        request = AccountDeletionRequest.objects.get(
-            user=self.user
-        )
+        request = AccountDeletionRequest.objects.get(user=self.user)
 
         self.assertEqual(request.reason, "Testing")
 
@@ -76,11 +72,8 @@ class AccountDeletionAPITests(APITestCase):
             status.HTTP_403_FORBIDDEN,
         )
 
-        self.assertFalse(
-            AccountDeletionRequest.objects.filter(
-                user=self.user
-            ).exists()
-        )
+        self.assertFalse(AccountDeletionRequest.objects.filter(user=self.user).exists())
+
 
 class CancelDeletionAPITests(APITestCase):
     def setUp(self):
@@ -110,8 +103,6 @@ class CancelDeletionAPITests(APITestCase):
         self.user.refresh_from_db()
         self.assertTrue(self.user.is_active)
 
-        request = AccountDeletionRequest.objects.get(
-            user=self.user
-        )
+        request = AccountDeletionRequest.objects.get(user=self.user)
 
         self.assertTrue(request.is_cancelled)
