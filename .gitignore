@@ -13,3 +13,4 @@ wheels/
 .env.prod
 *sqlite3
 *json
+schema.yml

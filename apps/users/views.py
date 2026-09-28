@@ -37,7 +37,7 @@ class FirebaseAuthView(APIView):
         user, created = get_or_create_firebase_user(firebase_uid=data.get('uid'), email=data.get('email'))
 
         if not user.is_active:
-            Response({'detail':'your account will be delete at 324234'})
+            return Response({'detail':'your account will be delete at 324234'})
         # Выдача доступа пользователю
         tokens = issue_tokens(user)
 
@@ -70,6 +70,7 @@ class RequestDeletionView(APIView):
             fields={'status': serializers.CharField()}
         )}
     )
+
     def post(self, request):
         # Проверка данных, токена
         decoded = verify_id_token(id_token=request.data['id_token'])
@@ -82,10 +83,9 @@ class RequestDeletionView(APIView):
         return Response({'detail': f'Аккаунт будет удалён {req.delete_at:%d.%m.%Y}'})
 
 
-class CancleDeleteView(APIView):
-    ''' Эндпоинт для отмены удаления аккаунта пользователем '''
-    permission_classes = (AllowAny, )
-
+class CancelDeletionView(APIView):
+    permission_classes = (AllowAny,)
+    
     @extend_schema(
         request=inline_serializer(
             name='CancelDeleteUser',
@@ -99,11 +99,22 @@ class CancleDeleteView(APIView):
         )}
     )
     def post(self, request):
-        # Проверка данных, токена
-        verify_id_token(id_token=request.data['id_token'])
-        
-        # Отправление запроса на отмену
-        request.user.deletion_request.cancel()
-        return Response({'detail': 'Аккаунт востановлен'})
-        
+        decoded = verify_id_token(
+            request.data["id_token"]
+        )
+
+        user = User.objects.get(
+            firebase_uid=decoded["uid"]
+        )
+
+        deletion_request = AccountDeletionRequest.objects.get(
+            user=user,
+            is_cancelled=False,
+        )
+
+        deletion_request.cancel()
+
+        return Response({
+            "detail": "Аккаунт восстановлен"
+        })
         
