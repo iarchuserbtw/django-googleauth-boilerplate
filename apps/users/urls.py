@@ -4,7 +4,12 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
-from apps.users.views import FirebaseAuthView, MeView, RequestDeletionView
+from apps.users.views import (
+    CancleDeleteView,
+    FirebaseAuthView,
+    MeView,
+    RequestDeletionView,
+)
 
 urlpatterns = [
     path('api/auth/', FirebaseAuthView.as_view(), name='firebase-auth'),
@@ -13,4 +18,5 @@ urlpatterns = [
 
     path('api/user/', MeView.as_view(), name='me_view'),
     path('api/user/delete/', RequestDeletionView.as_view(), name='delete_user'),
+    path('api/user/cancle_delete/', CancleDeleteView.as_view(), name='cancle_delete_user'),
 ]
