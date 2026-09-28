@@ -12,3 +12,4 @@ Dockerfile
 *.yml
 *.md
 *.sqlite3
+docs/

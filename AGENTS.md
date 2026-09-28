@@ -11,11 +11,16 @@ Django REST API boilerplate using:
 - Docker
 - uv
 
-## Architecture
+# Agent Instructions
 
-Read `.ai/architecture.md` before making architectural changes.
+Before making significant changes, read:
 
-Project structure is documented in `.ai/project-map.md`.
+- `docs/architecture.md`
+- `docs/project-map.md`
+- `docs/conventions.md`
+- `docs/testing.md`
+
+Follow the existing architecture and conventions.
 
 ## Rules
 
