@@ -1,52 +1,89 @@
-name: Django CI
-
+name: Run Django Tests
 on:
-  push:
-    branches: [ "master" ]
   pull_request:
-    branches: [ "master" ]
-
+  push:
+    branches:
+      - main
 jobs:
-  build:
+  code-style:
     runs-on: ubuntu-latest
-
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.14
+      - name: Run pre-commit hooks
+        uses: pre-commit/action@v3.0.0
+  type-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "0.9.17"
+          enable-cache: true
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.14
+      - name: Install Dependencies
+        run: |
+          uv sync --frozen
+      - name: Run Type Checking
+        run: |
+          uv run mypy .
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version:
+          - '3.14'
     services:
       postgres:
-        image: postgres:latest
+        image: postgres:17
         env:
-          POSTGRES_DB: db
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password123
-        ports:
-          - 5432:5432
+          POSTGRES_PASSWORD: postgres_password
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
-    env:
-      DJANGO_SECRET_KEY: "fake-secret-key"
-      DB_NAME: db
-      DB_USER: postgres
-      DB_PASSWORD: password123
-      DB_HOST: localhost
-      DB_PORT: 5432
-
+        ports:
+          - 5432:5432
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Read python version
-      run: echo "PYTHON_VERSION=$(cat .python-version)" >> $GITHUB_ENV
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "0.9.17"
+          enable-cache: true
 
-    - name: Set up uv
-      uses: astral-sh/setup-uv@v5
-      with:
-        enable-cache: true
-        python-version: ${{ env.PYTHON_VERSION }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Dependencies
+        run: |
+          uv sync --frozen
 
-    - name: Install Dependencies
-      run: uv sync --frozen
-
-    - name: Run Tests
-      run: uv run python manage.py test
+      - name: Run Tests
+        env:
+          DJANGO_DATABASE_USER: postgres
+          DJANGO_DATABASE_PASSWORD: postgres_password
+        run: |
+          uv run manage.py test
