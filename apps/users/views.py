@@ -2,13 +2,13 @@ from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import generics, serializers
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, Http404, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import AccountDeletionRequest
 from .serializers import UserSerializer
-from .services import get_or_create_firebase_user, issue_tokens, verify_id_token
+from .services import get_or_create_firebase_user, get_user_data_deletion, issue_tokens, verify_id_token
 
 User = get_user_model()
 
@@ -37,7 +37,9 @@ class FirebaseAuthView(APIView):
         user, created = get_or_create_firebase_user(firebase_uid=data.get('uid'), email=data.get('email'))
 
         if not user.is_active:
+            data = get_user_data_deletion(user=user)
             return Response({'detail':'your account will be delete at 324234'})
+            
         # Выдача доступа пользователю
         tokens = issue_tokens(user)
 
@@ -106,11 +108,19 @@ class CancelDeletionView(APIView):
         user = User.objects.get(
             firebase_uid=decoded["uid"]
         )
-
+        
+        if user is None:
+            raise ValidationError("User not found")
+            
         deletion_request = AccountDeletionRequest.objects.get(
             user=user,
             is_cancelled=False,
         )
+
+        if deletion_request is None:
+            raise ValidationError(
+                "No active account deletion request found."
+            )
 
         deletion_request.cancel()
 

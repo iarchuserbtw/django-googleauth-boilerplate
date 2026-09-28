@@ -6,7 +6,7 @@ from .models import User, AccountDeletionRequest
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = [f.name for f in User._meta.fields if f.name != 'password']
-    list_filter = ('date_joined', 'updated_at', 'last_activity')
+    list_filter = ('date_joined', 'updated_at')
     
 
 

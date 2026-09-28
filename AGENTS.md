@@ -42,7 +42,7 @@ Follow the existing architecture and conventions.
 5. Run tests.
 6. Run Ruff.
 
-See `.ai/conventions.md`.
+See `docs/conventions.md`.
 
 ## Validation
 

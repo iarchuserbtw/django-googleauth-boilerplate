@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from firebase_admin import auth
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
+from .models import AccountDeletionRequest
 
 User = get_user_model()
 
@@ -34,6 +35,11 @@ def get_or_create_firebase_user(*, firebase_uid: str, email: str) -> tuple[User,
     )
     return user, created
 
+def get_user_data_deletion(user: User):
+    data = AccountDeletionRequest.objects.get(user=user)
+    print(data)
+    return data
+    
 
 def verify_id_token(id_token: str):
     try:

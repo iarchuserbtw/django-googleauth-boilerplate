@@ -18,7 +18,6 @@ class User(AbstractUser):
     display_name = models.CharField(max_length=25, blank=True)
     phone = models.CharField(max_length=15, unique=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
-    last_activity = models.DateTimeField(blank=True, null=True)
 
     def get_full_name(self):
         return self.display_name or self.username
