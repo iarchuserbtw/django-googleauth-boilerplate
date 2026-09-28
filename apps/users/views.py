@@ -1,8 +1,7 @@
 from django.contrib.auth import get_user_model
-from django.core.exceptions import PermissionDenied
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import generics, serializers
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
