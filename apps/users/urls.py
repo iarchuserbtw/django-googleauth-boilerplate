@@ -12,5 +12,5 @@ urlpatterns = [
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
     path('api/user/', MeView.as_view(), name='me_view'),
-    path('api/user/', RequestDeletionView.as_view(), name='me_view'),
+    path('api/user/', RequestDeletionView.as_view(), name='delete_user'),
 ]
