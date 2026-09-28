@@ -76,6 +76,8 @@ jobs:
 
       - name: Run Tests
         env:
+          SECRET_KEY: ci-only-secret-key-that-is-long-enough-123456789
+          DEBUG: "False"
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres_password
         run: |
