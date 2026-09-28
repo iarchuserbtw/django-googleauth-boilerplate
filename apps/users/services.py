@@ -2,6 +2,7 @@ import re
 
 from django.contrib.auth import get_user_model
 from firebase_admin import auth
+from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
@@ -38,10 +39,10 @@ def verify_id_token(id_token: str):
     try:
         decoded = auth.verify_id_token(id_token, check_revoked=True)
     except auth.InvalidIdTokenError:
-        raise ...
+        raise AuthenticationFailed('id_token isnt right')
 
     if not decoded.get('email') or not decoded.get('uid'):
-            raise ...
+            raise ValidationError('email or uid isnt right')
             
     return decoded
 

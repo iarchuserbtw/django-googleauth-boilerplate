@@ -37,7 +37,7 @@ class FirebaseAuthView(APIView):
         user, created = get_or_create_firebase_user(firebase_uid=data.get('uid'), email=data.get('email'))
 
         if not user.is_active:
-            Response({'detail':'your account will be delete at 324234'})
+            return Response({'detail':'your account will be delete at 324234'})
         # Выдача доступа пользователю
         tokens = issue_tokens(user)
 
