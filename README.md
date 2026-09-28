@@ -18,7 +18,6 @@ A Django REST API boilerplate with **Firebase Authentication**, **JWT**, **Postg
 | Postman API documentation | ✅ Done | 26.09.26 |
 | Account deletion flow | ✅ Done | 28.09.26 |
 | Account deletion management command (`deleteusers`) | ✅ Done | 28.09.26 |
-| User last activity tracking | 🟡 In Progress | — |
 | Tests | ✅ Done | 28.09.26 |
 | Gunicorn / Uvicorn production setup | ✅ Done | 28.09.26 |
 | CI/CD | ⚪ Not Started | — |
@@ -26,6 +25,7 @@ A Django REST API boilerplate with **Firebase Authentication**, **JWT**, **Postg
 | MFA setup documentation | ⚪ Not Started | — |
 | Project architecture & AI coding guidelines | ⚪ Not Started | — |
 | Docker `.dockerignore` investigation | 🟡 In Progress | — |
+| User last activity tracking | ⚪ Not Started  | — |
 
 ### Status
 
