@@ -19,9 +19,6 @@ RUN uv sync --frozen
 
 COPY . .
 
-# Можно не запускать проект отсюда, для гибкости можно вынести в докер композ файл
-# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-
 
 # ---- prod ----
 FROM base AS prod
