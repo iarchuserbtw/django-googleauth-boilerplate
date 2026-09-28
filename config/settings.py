@@ -156,7 +156,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser'
     ],
-    # Доступ к эндпоинтам
+    # Доступ к эндпоинтамCI/CD 	⚪ Not Started
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],

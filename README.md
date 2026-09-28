@@ -20,7 +20,8 @@ A Django REST API boilerplate with **Firebase Authentication**, **JWT**, **Postg
 | Account deletion management command (`deleteusers`) | ✅ Done | 28.09.26 |
 | Tests | ✅ Done | 28.09.26 |
 | Gunicorn / Uvicorn production setup | ✅ Done | 28.09.26 |
-| CI/CD | ⚪ Not Started | — |
+| CI | 🟡 In Progress | 28.09.26 |
+| CD | ⚪ Not Started | — |
 | Production secrets management | ⚪ Not Started | — |
 | MFA setup documentation | ⚪ Not Started | — |
 | Project architecture & AI coding guidelines | ⚪ Not Started | — |
