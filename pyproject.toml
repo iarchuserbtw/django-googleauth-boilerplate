@@ -22,5 +22,11 @@ dependencies = [
     "whitenoise>=6.12.0",
 ]
 
+
+[dependency-groups]
+dev = [
+    "ruff>=0.16.9",
+]
+
 [tool.uv]
 package = false

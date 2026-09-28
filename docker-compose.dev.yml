@@ -7,7 +7,6 @@ services:
     # команды вынесены сюда, чтобы была гибкость при запуске дев
     command: sh -c "
       python manage.py migrate && 
-      python manage.py makemigrations && 
       python manage.py runserver 0.0.0.0:8000
       "
 

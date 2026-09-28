@@ -37,7 +37,6 @@ def get_or_create_firebase_user(*, firebase_uid: str, email: str) -> tuple[User,
 
 def get_user_data_deletion(user: User):
     data = AccountDeletionRequest.objects.get(user=user)
-    print(data)
     return data
     
 

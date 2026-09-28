@@ -38,7 +38,10 @@ class FirebaseAuthView(APIView):
 
         if not user.is_active:
             data = get_user_data_deletion(user=user)
-            return Response({'detail':'your account will be delete at 324234'})
+            return Response({
+                "detail": "Account is scheduled for deletion.",
+                "delete_at": data.delete_at,
+            })
             
         # Выдача доступа пользователю
         tokens = issue_tokens(user)
@@ -107,7 +110,7 @@ class CancelDeletionView(APIView):
 
         user = User.objects.get(
             firebase_uid=decoded["uid"]
-        )
+        ).first()
         
         if user is None:
             raise ValidationError("User not found")
@@ -115,7 +118,7 @@ class CancelDeletionView(APIView):
         deletion_request = AccountDeletionRequest.objects.get(
             user=user,
             is_cancelled=False,
-        )
+        ).first()
 
         if deletion_request is None:
             raise ValidationError(
