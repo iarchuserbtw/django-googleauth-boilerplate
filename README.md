@@ -27,6 +27,8 @@ A Django REST API boilerplate with **Firebase Authentication**, **JWT**, **Postg
 | Project architecture & AI coding guidelines | ⚪ Not Started | — |
 | Docker `.dockerignore` investigation | 🟡 In Progress | — |
 | User last activity tracking | ⚪ Not Started  | — |
+| mypy is added  | ⚪ Not Started  | — |
+| mypy erros is  | ⚪ Not Started  | — |
 
 ### Status
 

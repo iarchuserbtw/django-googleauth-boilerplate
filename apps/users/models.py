@@ -44,7 +44,7 @@ class AccountDeletionRequest(models.Model):
         verbose_name_plural = "Запросы на удаление аккаунтов"
 
     @classmethod
-    def schedule(cls, user, reason="", days: int = 7):
+    def schedule(cls, user: User, reason: str ="", days: int = 7):
         req, _ = cls.objects.update_or_create(
             user=user,
             defaults={
