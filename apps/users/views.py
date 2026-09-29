@@ -124,7 +124,7 @@ class CancelDeletionView(APIView):
     def post(self, request):
         decoded = verify_id_token(request.data["id_token"])
 
-        user = User.objects.get(firebase_uid=decoded["uid"]).first()
+        user = User.objects.get(firebase_uid=decoded["uid"])
 
         if user is None:
             raise ValidationError("User not found")
@@ -132,7 +132,7 @@ class CancelDeletionView(APIView):
         deletion_request = AccountDeletionRequest.objects.get(
             user=user,
             is_cancelled=False,
-        ).first()
+        )
 
         if deletion_request is None:
             raise ValidationError("No active account deletion request found.")

@@ -13,3 +13,4 @@ Dockerfile
 *.md
 *.sqlite3
 docs/
+firebase-credentials.json
