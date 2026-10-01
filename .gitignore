@@ -14,3 +14,4 @@ wheels/
 *sqlite3
 *json
 schema.yml
+.mypy*
