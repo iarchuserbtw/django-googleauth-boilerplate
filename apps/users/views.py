@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import AccountDeletionRequest
-from .serializers import UserSerializer
+from .serializers import FirebaseAuthRequestSerializer, UserSerializer
 from .services import (
     get_or_create_user,
     get_user_data_deletion,
@@ -33,6 +33,10 @@ class FirebaseAuthView(APIView):
         responses={200: inline_serializer(name="FirebaseAuth", fields={"status": serializers.CharField()})},
     )
     def post(self, request):
+        # Проверка токена на валидность
+        serializer = FirebaseAuthRequestSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         # Проверка и получение данных от пользователя
         data = verify_id_token(id_token=request.data["id_token"])
 
@@ -80,6 +84,10 @@ class RequestDeletionView(APIView):
         responses={200: inline_serializer(name="DeleteUser", fields={"status": serializers.CharField()})},
     )
     def post(self, request):
+        # Проверка токена на валидность
+        serializer = FirebaseAuthRequestSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         # Проверка данных, токена
         decoded = verify_id_token(id_token=request.data["id_token"])
         # Проверка на то тот ли пользователь хочет удалить аккаунт
@@ -104,9 +112,13 @@ class CancelDeletionView(APIView):
         responses={200: inline_serializer(name="CancelDeleteUser", fields={"status": serializers.CharField()})},
     )
     def post(self, request):
+        # Проверка токена на валидность
+        serializer = FirebaseAuthRequestSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         decoded = verify_id_token(request.data["id_token"])
 
-        user = User.objects.get(firebase_uid=decoded["uid"])
+        user = User.objects.filter(firebase_uid=decoded["uid"]).first()
 
         if user is None:
             raise ValidationError("User not found")

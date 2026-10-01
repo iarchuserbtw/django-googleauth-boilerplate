@@ -30,11 +30,14 @@ INSTALLED_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
-    "debug_toolbar",
     "drf_spectacular",
     "django_filters",
 ]
 
+if DEBUG:
+    THIRD_PARTY_APPS += [
+        "debug_toolbar",
+    ]
 PROJECT_APPS = ["apps.users.apps.UsersConfig"]
 
 INSTALLED_APPS = INSTALLED_APPS + THIRD_PARTY_APPS + PROJECT_APPS
@@ -50,9 +53,11 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-THIRD_PARTY_MIDDLEWARE = [
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
-]
+THIRD_PARTY_MIDDLEWARE = []
+if DEBUG:
+    THIRD_PARTY_MIDDLEWARE += [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+    ]
 
 MIDDLEWARE = MIDDLEWARE + THIRD_PARTY_MIDDLEWARE
 

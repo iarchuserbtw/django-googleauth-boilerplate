@@ -3,24 +3,28 @@ include custom.mk
 setup-env:
 	@[ ! -f ./.env ] && cp ./.env.example ./.env || echo ".env file already exists."
 
-start: ## Start the docker containers
-	@echo "Starting the docker containers"
-	@docker compose up
 
-stop: ## Stop Containers
-	@docker compose down
+# DEV
+dev-up: ## Up containers with dev parameters
+	@docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d
 
-restart: stop start ## Restart Containers
+dev-down: ## Down containers with dev parameters
+	@docker compose -f docker-compose.yml -f docker-compose.dev.yml down
 
-start-bg:  ## Run containers in the background
-	@docker compose up -d
+dev-restart: dev-down dev-up ## Restart Containers
 
-dev: ## Start Django and npm dev servers
-	@./scripts/dev.sh
+# PROD
+prod-up: ## Up containers with prod parameters
+	@docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d
 
+prod-down: ## Up containers with prod parameters
+	@docker compose -f docker-compose.yml -f docker-compose.dev.yml down
+
+dev-restart: dev-down dev-up ## Restart Containers
+
+# LOCAL
 django: ## Run Django dev server
 	@uv run manage.py runserver
-
 
 manage: ## Run any manage.py command. E.g. `make manage ARGS='createsuperuser'`
 	@uv run manage.py ${ARGS}
@@ -53,6 +57,8 @@ uv: ## Run a uv command
 uv-sync: ## Sync dependencies
 	@uv sync --frozen
 
+
+# FORMAT LINT TYPECHECK
 ruff-format: ## Runs ruff formatter on the codebase
 	@uv run ruff format .
 
@@ -68,6 +74,5 @@ help:
 	@grep -hE '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 # catch-all for any undefined targets - this prevents error messages
-# when running things like make npm-install <package>
 %:
 	@:
