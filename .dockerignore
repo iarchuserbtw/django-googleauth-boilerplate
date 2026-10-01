@@ -13,3 +13,5 @@ Dockerfile
 *.md
 *.sqlite3
 docs/
+.gitignore
+.mypy*
