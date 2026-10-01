@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import User, AccountDeletionRequest
+from .models import AccountDeletionRequest, User
 
 
 @admin.register(User)

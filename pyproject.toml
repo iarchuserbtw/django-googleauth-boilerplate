@@ -10,24 +10,67 @@ dependencies = [
     "django-environ>=0.14.0",
     "django-filter>=26.1",
     "django-stubs>=6.1.0",
-    "django-taggit>=6.1.0",
     "djangorestframework>=3.18.0",
     "djangorestframework-simplejwt>=5.5.1",
-    "drf-nested-routers>=0.95.3",
     "drf-spectacular>=0.30.0",
     "firebase-admin>=7.5.0",
     "gunicorn>=26.2.0",
-    "pillow>=12.3.0",
     "psycopg2-binary>=2.9.12",
     "whitenoise>=6.12.0",
 ]
 
-
 [dependency-groups]
 dev = [
+    "django-stubs>=6.1.0",
+    "djangorestframework-stubs>=3.18.1",
     "mypy>=2.3.1",
+    "pre-commit>=4.6.2",
     "ruff>=0.16.9",
 ]
 
 [tool.uv]
 package = false
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+extend-exclude = [
+    ".direnv",
+    ".git",
+    ".ruff_cache",
+    "node_modules",
+    "migrations",
+]
+line-length = 120
+indent-width = 4
+target-version = "py314"
+
+[tool.ruff.lint]
+# Ruff's (0.16+) default rules, plus the full pycodestyle (E) set.
+extend-select = ["E"]
+ignore = [
+    "RUF012",  # mutable-class-default: fights Django idioms (Meta.fields, form widgets, etc.)
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.mypy]
+plugins = [
+    "mypy_django_plugin.main",
+    "mypy_drf_plugin.main",
+]
+
+[tool.django-stubs]
+django_settings_module = "config.settings"
+
+[[tool.mypy.overrides]]
+module = [
+    "environ",
+    "environ.*",
+    "firebase_admin",
+    "firebase_admin.*",
+]
+ignore_missing_imports = true

@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from firebase_admin import auth
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
+
 from .models import AccountDeletionRequest
 
 User = get_user_model()

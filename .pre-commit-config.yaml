@@ -20,3 +20,11 @@ repos:
       - id: ruff-check
         args: ["--fix"]
       - id: ruff-format
+      # uv run pre-commit install
+      # Подключить, когда пробелмы с типам будут решены
+      # - id: mypy
+      #   name: mypy
+      #   entry: uv run mypy .
+      #   language: system
+      #   types: [python]
+      #   pass_filenames: false

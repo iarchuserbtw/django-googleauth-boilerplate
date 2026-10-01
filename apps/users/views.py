@@ -30,20 +30,14 @@ class FirebaseAuthView(APIView):
                 "id_token": serializers.CharField(),
             },
         ),
-        responses={
-            200: inline_serializer(
-                name="FirebaseAuth", fields={"status": serializers.CharField()}
-            )
-        },
+        responses={200: inline_serializer(name="FirebaseAuth", fields={"status": serializers.CharField()})},
     )
     def post(self, request):
         # Проверка и получение данных от пользователя
         data = verify_id_token(id_token=request.data["id_token"])
 
         # Создание пользователя
-        user, created = get_or_create_firebase_user(
-            firebase_uid=data.get("uid"), email=data.get("email")
-        )
+        user, created = get_or_create_firebase_user(firebase_uid=data.get("uid"), email=data.get("email"))
 
         if not user.is_active:
             data = get_user_data_deletion(user=user)
@@ -83,25 +77,17 @@ class RequestDeletionView(APIView):
                 "reason": serializers.CharField(),
             },
         ),
-        responses={
-            200: inline_serializer(
-                name="DeleteUser", fields={"status": serializers.CharField()}
-            )
-        },
+        responses={200: inline_serializer(name="DeleteUser", fields={"status": serializers.CharField()})},
     )
     def post(self, request):
         # Проверка данных, токена
         decoded = verify_id_token(id_token=request.data["id_token"])
         # Проверка на то тот ли пользователь хочет удалить аккаунт
         if decoded["uid"] != request.user.firebase_uid:
-            raise PermissionDenied(
-                "Firebase token does not belong to the authenticated user."
-            )
+            raise PermissionDenied("Firebase token does not belong to the authenticated user.")
 
         # Отправление запроса на удаление
-        req = AccountDeletionRequest.schedule(
-            request.user, reason=request.data.get("reason", "")
-        )
+        req = AccountDeletionRequest.schedule(request.user, reason=request.data.get("reason", ""))
         return Response({"detail": f"Аккаунт будет удалён {req.delete_at:%d.%m.%Y}"})
 
 
@@ -115,11 +101,7 @@ class CancelDeletionView(APIView):
                 "id_token": serializers.CharField(),
             },
         ),
-        responses={
-            200: inline_serializer(
-                name="CancelDeleteUser", fields={"status": serializers.CharField()}
-            )
-        },
+        responses={200: inline_serializer(name="CancelDeleteUser", fields={"status": serializers.CharField()})},
     )
     def post(self, request):
         decoded = verify_id_token(request.data["id_token"])
