@@ -5,7 +5,7 @@ from django.test import TestCase
 from rest_framework.exceptions import ValidationError
 
 from apps.users.services import (
-    get_or_create_firebase_user,
+    get_or_create_user,
     verify_id_token,
 )
 
@@ -14,7 +14,7 @@ User = get_user_model()
 
 class FirebaseUserServiceTests(TestCase):
     def test_creates_new_user(self):
-        user, created = get_or_create_firebase_user(
+        user, created = get_or_create_user(
             firebase_uid="uid-123",
             email="hello@example.com",
         )
@@ -26,12 +26,12 @@ class FirebaseUserServiceTests(TestCase):
         self.assertEqual(user.display_name, "hello")
 
     def test_existing_user_is_not_created_twice(self):
-        first, _ = get_or_create_firebase_user(
+        first, _ = get_or_create_user(
             firebase_uid="uid-123",
             email="hello@example.com",
         )
 
-        second, created = get_or_create_firebase_user(
+        second, created = get_or_create_user(
             firebase_uid="uid-123",
             email="hello@example.com",
         )
@@ -45,7 +45,7 @@ class FirebaseUserServiceTests(TestCase):
             email="another@example.com",
         )
 
-        user, _ = get_or_create_firebase_user(
+        user, _ = get_or_create_user(
             firebase_uid="uid-123",
             email="hello@example.com",
         )

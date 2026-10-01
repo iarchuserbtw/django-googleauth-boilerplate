@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from .models import AccountDeletionRequest
 from .serializers import UserSerializer
 from .services import (
-    get_or_create_firebase_user,
+    get_or_create_user,
     get_user_data_deletion,
     issue_tokens,
     verify_id_token,
@@ -37,7 +37,7 @@ class FirebaseAuthView(APIView):
         data = verify_id_token(id_token=request.data["id_token"])
 
         # Создание пользователя
-        user, created = get_or_create_firebase_user(firebase_uid=data.get("uid"), email=data.get("email"))
+        user, created = get_or_create_user(firebase_uid=data.get("uid"), email=data.get("email"))
 
         if not user.is_active:
             data = get_user_data_deletion(user=user)

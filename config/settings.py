@@ -198,7 +198,11 @@ LOGGING = {
 }
 
 # FIREBASE CONFIG
-FIREBASE_KEY_PATH = os.path.join(BASE_DIR, "firebase-credentials.json")
+# FIREBASE_KEY_PATH = os.path.join(BASE_DIR, "firebase-credentials.json")
+FIREBASE_KEY_PATH = env(
+    "FIREBASE_KEY_PATH",
+    default=str(BASE_DIR / "firebase-credentials.json"),
+)
 
 # Token Settings
 # Настроить позже более верно

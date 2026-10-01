@@ -5,6 +5,7 @@ from firebase_admin import auth
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from .firebase import verify_firebase_token
 from .models import AccountDeletionRequest
 
 User = get_user_model()
@@ -24,7 +25,7 @@ def _generate_username(email: str) -> str:
     return username
 
 
-def get_or_create_firebase_user(*, firebase_uid: str, email: str) -> tuple[User, bool]:
+def get_or_create_user(*, firebase_uid: str, email: str) -> tuple[User, bool]:
     username = _generate_username(email)
     user, created = User.objects.get_or_create(
         firebase_uid=firebase_uid,
@@ -44,11 +45,11 @@ def get_user_data_deletion(user: User):
 
 def verify_id_token(id_token: str):
     try:
-        decoded = auth.verify_id_token(id_token, check_revoked=True)
+        decoded = verify_firebase_token(id_token)
     except auth.InvalidIdTokenError:
-        raise AuthenticationFailed("id_token isnt right")
+        raise AuthenticationFailed("Invalid Firebase ID token")
 
     if not decoded.get("email") or not decoded.get("uid"):
-        raise ValidationError("email or uid isnt right")
+        raise ValidationError("Firebase token must contain email and uid")
 
     return decoded
