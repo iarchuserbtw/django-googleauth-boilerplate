@@ -21,8 +21,6 @@ dev: ## Start Django and npm dev servers
 django: ## Run Django dev server
 	@uv run manage.py runserver
 
-celery: ## Start Celery and celery beat
-	@uv run celery -A project worker -l INFO --beat --pool=solo
 
 manage: ## Run any manage.py command. E.g. `make manage ARGS='createsuperuser'`
 	@uv run manage.py ${ARGS}
@@ -65,29 +63,6 @@ ruff: ruff-format ruff-lint ## Formatting and linting using Ruff
 
 type-check: ## Run Python type checking
 	@uv run mypy .
-
-npm-install-all: ## Runs npm install
-	@npm install
-
-npm-install: ## Runs npm install (optionally accepting package names)
-	@npm install $(filter-out $@,$(MAKECMDGOALS))
-
-npm-uninstall: ## Runs npm uninstall (takes package name(s))
-	@npm uninstall $(filter-out $@,$(MAKECMDGOALS))
-
-npm-build: ## Runs npm build (for production assets)
-	@npm run build
-
-npm-dev: ## Runs npm dev
-	@npm run dev
-
-npm-type-check: ## Runs the type checker on the front end TypeScript code
-	@npm run type-check
-
-upgrade: migrations migrate npm-install npm-dev  ## Run after a Pegasus upgrade to update requirements, migrate the database, and rebuild the front end
-
-.PHONY: help
-.DEFAULT_GOAL := help
 
 help:
 	@grep -hE '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

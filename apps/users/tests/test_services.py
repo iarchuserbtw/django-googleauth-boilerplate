@@ -54,7 +54,7 @@ class FirebaseUserServiceTests(TestCase):
 
 
 class VerifyIdTokenTests(TestCase):
-    @patch("apps.users.services.auth.verify_id_token")
+    @patch("apps.users.services.verify_firebase_token")
     def test_valid_token_returns_decoded_data(self, mock_verify):
         mock_verify.return_value = {
             "uid": "uid-123",
@@ -64,10 +64,7 @@ class VerifyIdTokenTests(TestCase):
         decoded = verify_id_token("token")
 
         self.assertEqual(decoded["uid"], "uid-123")
-        mock_verify.assert_called_once_with(
-            "token",
-            check_revoked=True,
-        )
+        mock_verify.assert_called_once_with("token")
 
     @patch("apps.users.services.auth.verify_id_token")
     def test_missing_uid_raises_validation_error(self, mock_verify):
