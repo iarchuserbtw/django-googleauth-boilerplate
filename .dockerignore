@@ -16,3 +16,4 @@ docs/
 firebase-credentials.json
 .gitignore
 .mypy*
+.idea

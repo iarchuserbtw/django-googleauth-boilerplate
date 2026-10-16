@@ -15,3 +15,4 @@ wheels/
 *json
 schema.yml
 .mypy*
+.idea
