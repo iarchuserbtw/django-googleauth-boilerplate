@@ -20,10 +20,10 @@ prod-up: ## Up containers with prod parameters
 prod-down: ## Up containers with prod parameters
 	@docker compose -f docker-compose.yml -f docker-compose.dev.yml down
 
-dev-restart: dev-down dev-up ## Restart Containers
+# dev-restart: dev-down dev-up ## Restart Containers
 
 # LOCAL
-django: ## Run Django dev server
+local-up: ## Run Django dev server
 	@uv run manage.py runserver
 
 manage: ## Run any manage.py command. E.g. `make manage ARGS='createsuperuser'`
